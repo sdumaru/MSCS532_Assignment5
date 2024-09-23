@@ -2,9 +2,7 @@
 
 import timeit
 import random
-from memory_profiler import profile
 
-# @profile
 def partition(array, first, last):
     """ Split the array into 2 parts based on the pivot element """
     pivot = array[last]                                                         # Select a pivot element to compare with other elements
@@ -30,7 +28,6 @@ def randomized_partition(array, first, last):
     array[last], array[random_pivot] = array[random_pivot], array[last]         # Swap last element with random pivot element
     return partition(array, first, last)                                        # Apply normal partition function
 
-# @profile
 def quicksort(array, first, last, randomization):
     """ Function that will take array, leftmost index and rightmost index of array 
         as an input and return sorted array """
@@ -41,18 +38,18 @@ def quicksort(array, first, last, randomization):
         if randomization:
             partition_index = randomized_partition(array, first, last)
         else:
-            partition_index = partition(array, first. last)
+            partition_index = partition(array, first, last)
 
         # Divide-and-Conquer method
-        quicksort(array, first, partition_index - 1)
-        quicksort(array, partition_index + 1, last)
+        quicksort(array, first, partition_index - 1, randomization)
+        quicksort(array, partition_index + 1, last, randomization)
     return array
 
-def print_execution_times(array_name):
+def print_execution_times(array_name, randomization):
     """ Function to print execution times """
-    timer_stmt = '''quick_sort({0}, 0, len({0}) - 1, false)'''
-    times = timeit.repeat(stmt=timer_stmt.format(array_name), repeat=5, number=10000, globals=globals())
-    print('Quick sort time for array: ' + str(min(times)))
+    timer_stmt = '''quicksort({0}, 0, len({0}) - 1, {1})'''
+    times = timeit.repeat(stmt=timer_stmt.format(array_name, randomization), repeat=5, number=10000, globals=globals())
+    print('Total execution time: ' + str(min(times)))
 
 def huge_random_array():
     """ Function to return huge number of random integers for testing purpose """
@@ -63,12 +60,48 @@ def huge_random_array():
     return array
 
 # Testing performance of algorithms on these arrays
+empty_array = []
 randomized_array = [23, 65, 98, 1, 36, 47, 76, 28, 83, 15]
 sorted_array = [1, 15, 23, 28, 36, 47, 65, 76, 83, 98]
 reversed_sorted_array = [98, 83, 76, 65, 47, 36, 28, 23, 15, 1]
+repeated_elements_array = [23, 56, 23, 84, 56, 23, 56, 84, 23, 84]
 
 # Print execution times for the array
-print_execution_times(randomized_array)
-print_execution_times(sorted_array)
-print_execution_times(reversed_sorted_array)
-print_execution_times(huge_random_array())
+print("\n" + "DETERMINISTIC QUICKSORT:")
+print("Empty Array", end = " ---> ")
+print_execution_times(empty_array, False)
+
+print("Random Array", end = " ---> ")
+print_execution_times(randomized_array, False)
+
+print("Sorted Array", end = " ---> ")
+print_execution_times(sorted_array, False)
+
+print("Reversed Sorted Array", end = " ---> ")
+print_execution_times(reversed_sorted_array, False)
+
+print("Repeated Elements Array", end = " ---> ")
+print_execution_times(repeated_elements_array, False)
+
+print("Huge Random Array", end = " ---> ")
+print_execution_times(huge_random_array(), False)
+
+# Print execution times for the array
+print("\n" + "RANDOMIZED QUICKSORT:")
+print("Empty Array", end = " ---> ")
+print_execution_times(empty_array, True)
+
+print("Random Array", end = " ---> ")
+print_execution_times(randomized_array, True)
+
+print("Sorted Array", end = " ---> ")
+print_execution_times(sorted_array, True)
+
+print("Reversed Sorted Array", end = " ---> ")
+print_execution_times(reversed_sorted_array, True)
+
+print("Repeated Elements Array", end = " ---> ")
+print_execution_times(repeated_elements_array, True)
+
+print("Huge Random Array", end = " ---> ")
+print_execution_times(huge_random_array(), True)
